@@ -67,8 +67,8 @@ public:
                     chunk.fill(rlen); // right read len
                 }
                 if (mcnt == 0) std::cerr << readName << "\n";
-                //std::cerr << "ra" << readCnt << " " << readName << " " << mcnt << "\n";
-
+                //std::cerr << "ra" << readCnt << " " << readName << " " << mcnt << " " << llen << "\n";
+                //std::exit(1);
                 //logger->info("read name {}", readName);
                 //logger->info("count {}", mcnt);
                 double maxScore{0};
@@ -77,22 +77,25 @@ public:
                     rLenType lcnt{0}, rcnt{0};
                     refLenType reflPos{0}, refrPos{0};
                     double reflScore{0}, refrScore{0};
-                    bool lori, rori;
+                    bool lori{false}, rori{false};
                     chunk.fill(puff_id);
                     chunk.fill(lcnt);
+                    //if (puff_id != 0 and lcnt != 0)
+                    //std::cerr << "p" << puff_id << " lc" << lcnt << " " << puffoutFilePointer->isMappingPaired() << "\n";
                     if (puffoutFilePointer->isMappingPaired()) {
                         chunk.fill(rcnt);
                     }
                     if (lcnt > 0) {
                         chunk.fill(reflScore);
                         chunk.fill(reflPos);
-                        lori = reflPos & PuffoutParser::HighBitMask;
+                        //std::cerr << reflScore << " " << reflPos << "\n";
+                        lori = static_cast<bool>(reflPos & PuffoutParser::HighBitMask);
                         reflPos = reflPos & PuffoutParser::LowBitsMask;
                     }
                     if (rcnt > 0) {
                         chunk.fill(refrScore);
                         chunk.fill(refrPos);
-                        rori = refrPos & PuffoutParser::HighBitMask;
+                        rori = static_cast<bool>(refrPos & PuffoutParser::HighBitMask);
                         refrPos = refrPos & PuffoutParser::LowBitsMask;
                     }
                     if (lcnt > 0 && rcnt > 0) {
@@ -174,6 +177,15 @@ public:
                           });
 
                 readCnt++;
+                if (jointHitGroup.alignments().size() > 0) {
+                    /*auto p = jointHitGroup.alignments().begin();
+                    std::cerr << readCnt << "\t" << readName << "\t"
+                              << p->transcriptID() << "\t"
+                              << p->score() << "\t"
+                              << (p->mateStatus == MateStatus::SINGLE_END) << "\n";*/
+                } else {
+                    std::cerr << "size was zero\n";
+                }
             }
         }
         return true;

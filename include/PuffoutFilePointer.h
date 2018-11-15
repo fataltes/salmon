@@ -107,6 +107,7 @@ private:
         size_t refCount;
         inFile.read(reinterpret_cast<char *>(&isPaired), sizeof(bool));
         inFile.read(reinterpret_cast<char *>(&refCount), sizeof(size_t));
+        logger->info("Reads are paired?: {}", isPaired);
         logger->info("Total # of References: {}", refCount);
         refLengths.reserve(refCount);
         refNames.reserve(refCount);
